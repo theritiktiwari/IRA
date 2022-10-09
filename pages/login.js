@@ -110,11 +110,11 @@ const Login = ({ siteName, logo, color }) => {
                     <h5 className="mb-4 text-uppercase">Login</h5>
                     <div className="form-floating mb-3">
                         <input type="email" className="form-control" value={email} onChange={handleChange} name="email" id="email" placeholder="user@ira.com" />
-                        <label for="email">Email address</label>
+                        <label htmlFor="email">Email address</label>
                     </div>
                     <div className="form-floating mb-3">
                         <input type="password" className="form-control" value={password} onChange={handleChange} name="password" id="password" placeholder="Password" />
-                        <label for="password">Password</label>
+                        <label htmlFor="password">Password</label>
                     </div>
                     {!loading && <button type="submit" className="btn-main w-100 mt-2">Login</button>}
                     {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">
