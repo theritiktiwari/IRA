@@ -56,15 +56,23 @@ const Login = ({ siteName, logo, color }) => {
                     }, process.env.NEXT_PUBLIC_JWT_SECRET_KEY, {
                         expiresIn: "2d"
                     });
+                    console.log(q.docs[0].id);
                     localStorage.setItem("ira-user", JSON.stringify({
                         token: token,
+                        id: q.docs[0].id,
                         name: q.docs[0].data().name,
                         email: q.docs[0].data().email
                     }));
                     tst("Authetication successful", "success");
-                    setTimeout(() => {
-                        router.push('/');
-                    }, 2500);
+                    if (q.docs[0].data().profile) {
+                        setTimeout(() => {
+                            router.push('/');
+                        }, 2500);
+                    } else {
+                        setTimeout(() => {
+                            router.push('/buildProfile');
+                        }, 2500);
+                    }
                 } else {
                     tst("Invalid Credentials", "error");
                 }

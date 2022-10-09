@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }) {
   const color = "#FD365C";
   const router = useRouter();
 
-  const [user, setUser] = useState({ token: null, name: null, email: null });
+  const [user, setUser] = useState({ token: null, id: null, name: null, email: null });
   const [key, setKey] = useState();
   const [progress, setProgress] = useState(0);
 
@@ -28,14 +28,14 @@ function MyApp({ Component, pageProps }) {
 
     const myUser = JSON.parse(localStorage.getItem("ira-user"));
     if (myUser) {
-      setUser({ token: myUser.token, name: myUser.name, email: myUser.email });
+      setUser({ token: myUser.token, id: myUser.id, name: myUser.name, email: myUser.email });
     }
     setKey(Math.random());
   }, [router]);
 
   const logout = () => {
     localStorage.removeItem("ira-user");
-    setUser({ token: null, name: null, email: null });
+    setUser({ token: null, id: null, name: null, email: null });
     setKey(Math.random());
     router.push("/");
   }
@@ -58,9 +58,9 @@ function MyApp({ Component, pageProps }) {
       onLoaderFinished={() => setProgress(0)}
     />
 
-    {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && key && <Header siteName={siteName} key={key} logo={logo} user={user} logout={logout} />}
+    {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && router.asPath !== "/buildProfile" && key && <Header siteName={siteName} key={key} logo={logo} user={user} logout={logout} />}
     <Component {...pageProps} siteName={siteName} logo={logo} user={user} color={color} />
-    {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && <Footer siteName={siteName} />}
+    {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && router.asPath !== "/buildProfile" && <Footer siteName={siteName} />}
   </>
 }
 

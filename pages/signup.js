@@ -51,7 +51,8 @@ const Signup = ({ siteName, logo, color }) => {
                 let query = await addDoc(collection(db, "users"), {
                     name: name,
                     email: email,
-                    password: CryptoJS.AES.encrypt(password, process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY).toString()
+                    password: CryptoJS.AES.encrypt(password, process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY).toString(),
+                    profile: false
                 });
                 if (query.id) {
                     tst("Account created successfully", "success");

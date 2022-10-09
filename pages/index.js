@@ -15,7 +15,7 @@ const Index = ({ siteName, color }) => {
 
       <section className="container-fluid main mx-auto d-flex justify-content-center align-items-center">
         <div className="text text-center">
-          <h1 className="display-2 fw-bold bg-dark px-4">IRA : Mood Detection</h1>
+          <h1 className="display-2 fw-bold bg-dark px-4">IRA : Mood Assistant</h1>
           {/* <p className="lead">This is a portal for Mood detection, by which a person can detect his mood.</p>
             <Link href="/signup">
               <a className="btn btn-main btn-lg">Get Started</a>
