@@ -29,10 +29,10 @@ const Header = ({ siteName, logo, user, logout }) => {
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li className={`nav-item ${!user.token && "me-2"}`}>
-                                <Link href="/"><a className="nav-link active" aria-current="page">Home</a></Link>
-                            </li>
                             {user.token && <>
+                                <li className="nav-item">
+                                    <Link href="/"><a className="nav-link active" aria-current="page">Home</a></Link>
+                                </li>
                                 <li className="nav-item">
                                     <Link href="/detect"><a className="nav-link" aria-current="page">Detect the Mood</a></Link>
                                 </li>

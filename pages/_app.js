@@ -11,6 +11,7 @@ import Footer from '../Components/Footer';
 function MyApp({ Component, pageProps }) {
   const siteName = "IRA";
   const logo = "https://i.ibb.co/NrCZtW4/IRA.png";
+  const color = "#FD365C";
   const router = useRouter();
 
   const [user, setUser] = useState({ token: null, name: null, email: null });
@@ -50,7 +51,7 @@ function MyApp({ Component, pageProps }) {
     <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossOrigin="anonymous"></Script>
 
     <LoadingBar
-      color={"#FD365C"}
+      color={color}
       height={5}
       progress={progress}
       waitingTime={800}
@@ -58,7 +59,7 @@ function MyApp({ Component, pageProps }) {
     />
 
     {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && key && <Header siteName={siteName} key={key} logo={logo} user={user} logout={logout} />}
-    <Component {...pageProps} siteName={siteName} logo={logo} user={user} />
+    <Component {...pageProps} siteName={siteName} logo={logo} user={user} color={color} />
     {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && <Footer siteName={siteName} />}
   </>
 }

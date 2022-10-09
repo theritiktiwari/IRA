@@ -90,6 +90,18 @@ form textarea:focus {
     font-weight: bold;
 }
 
+.back-to-home {
+    display: block;
+    position: fixed;
+    font-weight: bold;
+    top: 20px;
+    left: 20px;
+}
+
+.back-to-home a {
+    color: $secondary-color;
+}
+
 // Header section
 .navbar-scrolled {
     background-color: rgba(255, 255, 255, 0.5) !important;
@@ -109,7 +121,7 @@ form textarea:focus {
 .main {
     height: 100vh;
     background-image: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url("https://image.shutterstock.com/image-vector/set-male-characters-different-facial-260nw-1606423891.jpg");
-    background-image: linear-gradient(rgba(0, 255, 255, 0.6), rgba(255, 0, 255, 0.6)), url("https://image.shutterstock.com/image-vector/set-male-characters-different-facial-260nw-1606423891.jpg");
+    background-image: linear-gradient(rgba(0, 255, 255, 0.6), rgba(255, 0, 255, 0.6)), url("https://i.ibb.co/Ms1vTsB/Mood.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -145,6 +157,14 @@ form textarea:focus {
     color: $secondary-color;
     font-weight: bold;
 }
+
+// .loader {
+//     // centered 
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+// }
 
 // Footer section
 footer {

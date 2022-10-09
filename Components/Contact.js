@@ -3,12 +3,13 @@ import { db } from "../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Loader from './Loader';
 
-const Contact = () => {
-
+const Contact = ({ color }) => {
     const [name, setName] = useState();
     const [email, setEmail] = useState();
     const [message, setMessage] = useState();
+    const [loading, setLoading] = useState(false);
 
     const tst = (msg, type) => {
         const data = {
@@ -29,6 +30,7 @@ const Contact = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         if (name && email && message) {
             let query = await addDoc(collection(db, "contact"), {
                 name: name,
@@ -46,6 +48,7 @@ const Contact = () => {
         } else {
             tst("Please fill all the fields", "error");
         }
+        setLoading(false);
     }
 
     const handleChange = (e) => {
@@ -94,7 +97,11 @@ const Contact = () => {
                             <label for="message" className='form-label'>Message</label>
                             <textarea className="form-control" placeholder="Leave a message here" name="message" value={message} onChange={handleChange} id="message" style={{ height: "100px" }}></textarea>
                         </div>
-                        <button type="submit" className="btn-main w-100 mt-2">Submit</button>
+                        {!loading && <button type="submit" id="submit" className="btn-main w-100 mt-2">Submit</button>}
+
+                        {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">
+                            <Loader color={color} />
+                        </div>}
                     </form>
                 </div>
             </section>
