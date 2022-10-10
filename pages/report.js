@@ -18,7 +18,7 @@ const Report = ({ siteName, color, user }) => {
     useEffect(() => {
         const getData = async () => {
             let sugg = [];
-            const querySnapshot = await getDocs(collection(db, `suggestions`));
+            const querySnapshot = await getDocs(query(collection(db, "suggestions"), where("user_id", "==", user.id)));
             querySnapshot.forEach((doc) => {
                 sugg.push(doc.data());
             });
