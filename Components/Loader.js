@@ -11,7 +11,7 @@ const Loader = ({ color }) => {
                 width="80"
                 ariaLabel="progress-bar-loading"
                 wrapperStyle={{}}
-                wrapperClass="progress-bar-wrapper"
+                wrapperclassName="progress-bar-wrapper"
                 borderColor='#222222'
                 barColor={color}
             />

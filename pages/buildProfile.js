@@ -73,12 +73,13 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
             });
             if (query.id) {
                 tst("Answer submitted successfully", "success");
+                localStorage.setItem("ira-order", JSON.stringify(order + 1));
                 setOrder(order + 1);
                 setAnswer("");
-                localStorage.setItem("ira-order", JSON.stringify(order));
                 if (order == questions.length - 1) {
                     await updateDoc(doc(db, "users", user.id), {
-                        profile: true
+                        profile: true,
+                        mood: "sad"
                     });
                     localStorage.removeItem("ira-order");
                     router.push('/');

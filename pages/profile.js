@@ -18,7 +18,16 @@ const Profile = ({ siteName, user, color }) => {
         if (!localStorage.getItem("ira-user")) {
             router.push("/");
         }
-    }, [router]);
+        const check = async () => {
+            const q = await getDocs(query(collection(db, "users"), where("email", "==", user.email)));
+            if (q.docs.length) {
+                if (q.docs[0].data().profile == false) {
+                    router.push("/buildProfile");
+                }
+            }
+        }
+        check();
+    }, [router, user]);
 
     useEffect(() => {
         const getData = async () => {

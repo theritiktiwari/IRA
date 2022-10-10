@@ -46,7 +46,7 @@ const Header = ({ siteName, logo, user, logout }) => {
                                 <li className="nav-item fw-bold">
                                     <Link href="/report"><a className="nav-link" aria-current="page">Report</a></Link>
                                 </li>
-                                <li className="nav-item fw-bold mb-2">
+                                <li className="nav-item fw-bold mb-2 me-2">
                                     <Link href="/profile"><a className="nav-link" aria-current="page">Profile</a></Link>
                                 </li>
                                 <li className="nav-item me-2 mb-2">

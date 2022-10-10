@@ -58,9 +58,9 @@ function MyApp({ Component, pageProps }) {
       onLoaderFinished={() => setProgress(0)}
     />
 
-    {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && router.asPath !== "/buildProfile" && key && <Header siteName={siteName} key={key} logo={logo} user={user} logout={logout} />}
+    {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && router.asPath !== "/buildProfile" && router.asPath !== "/result" && key && <Header siteName={siteName} key={key} logo={logo} user={user} logout={logout} />}
     <Component {...pageProps} siteName={siteName} logo={logo} user={user} color={color} />
-    {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && router.asPath !== "/buildProfile" && <Footer siteName={siteName} />}
+    {pageProps.statusCode !== 404 && pageProps.statusCode !== 500 && router.asPath !== "/login" && router.asPath !== "/signup" && router.asPath !== "/reset" && router.asPath !== "/buildProfile" && router.asPath !== "/result" && <Footer siteName={siteName} />}
   </>
 }
 
