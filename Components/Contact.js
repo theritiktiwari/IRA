@@ -81,7 +81,7 @@ const Contact = ({ color }) => {
                     <div className="details">
                         <h1 className="title">Contact Us</h1>
                         <p className="mt-4">Email Address : <a href='mailto:theritiktiwari@gmail.com'>theritiktiwari@gmail.com</a></p>
-                        <p className="mt-4">Address : <span>Kelambakkam - Vandalur Rd, Rajan Nagar, Chennai, <br /> Tamil Nadu, 600-127</span></p>
+                        <p className="mt-4">Address : <span>Kelambakkam - Vandalur Rd, Rajan Nagar, <br /> Chennai, Tamil Nadu, 600-127</span></p>
                     </div>
                     <form onSubmit={handleSubmit} method="POST" className='p-5'>
                         <h5 className="mb-4 text-uppercase">Send Message</h5>

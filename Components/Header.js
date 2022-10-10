@@ -28,22 +28,26 @@ const Header = ({ siteName, logo, user, logout }) => {
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                            {user.token && <>
+                                <li className="nav-item me-2 mb-2">
+                                    <a className="nav-link fw-bold text-ira" aria-current="page">Welcome, {user.name}</a>
+                                </li>
+                            </>}
+                        </ul>
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             {user.token && <>
-                                <li className="nav-item">
+                                <li className="nav-item fw-bold">
                                     <Link href="/"><a className="nav-link active" aria-current="page">Home</a></Link>
                                 </li>
-                                <li className="nav-item">
+                                <li className="nav-item fw-bold">
                                     <Link href="/detect"><a className="nav-link" aria-current="page">Detect the Mood</a></Link>
                                 </li>
-                                <li className="nav-item">
-                                    <Link href="/profile"><a className="nav-link" aria-current="page">Profile</a></Link>
-                                </li>
-                                <li className="nav-item">
+                                <li className="nav-item fw-bold">
                                     <Link href="/report"><a className="nav-link" aria-current="page">Report</a></Link>
                                 </li>
-                                <li className="nav-item me-2 mb-2">
-                                    <a className="nav-link" aria-current="page">Welcome, {user.name}</a>
+                                <li className="nav-item fw-bold mb-2">
+                                    <Link href="/profile"><a className="nav-link" aria-current="page">Profile</a></Link>
                                 </li>
                                 <li className="nav-item me-2 mb-2">
                                     <a onClick={logout} className="btn btn-sm">Logout</a>

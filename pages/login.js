@@ -113,7 +113,7 @@ const Login = ({ siteName, logo, color }) => {
                 <Link href={"/"}><a>← Home</a></Link>
             </div>
             <section className="auth d-flex justify-content-center align-items-center" style={{ height: "100vh", width: "100vw" }}>
-                <form onSubmit={handleSubmit} method="POST" className='p-5 w-50'>
+                <form onSubmit={handleSubmit} method="POST" className='p-5'>
                     {logo ? <div className="d-flex justify-content-center align-items-center"><Link href={"/"}><a><img src={logo} alt="logo" className='mb-2' width="100" /></a></Link></div> : null}
                     <h5 className="mb-4 text-uppercase">Login</h5>
                     <div className="form-floating mb-3">
