@@ -27,7 +27,7 @@ const Detect = ({ siteName, color, user }) => {
         const getData = async () => {
             const u = await getDocs(query(collection(db, "users"), where("email", "==", user.email)));
             if (u.docs.length) {
-                setDetect(u.docs[0].data().detect || 1);
+                setDetect(u.docs[0].data().detect || 0);
                 let q = [];
                 const querySnapshot = await getDocs(collection(db, `${u.docs[0].data().mood}-questions-detection`));
                 querySnapshot.forEach((doc) => {
