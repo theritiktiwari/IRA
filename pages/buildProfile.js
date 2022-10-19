@@ -108,20 +108,19 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
                     setOrder(order + 1);
                     setScore("" + score + option);
                     setAnswer("");
-                    if (order == questions.length - 1) {
+                    if (order == questions.length) {
                         let str = JSON.parse(localStorage.getItem("ira-score"));
                         let optionCount = count(str);
                         let max = Math.max(optionCount[1], optionCount[2], optionCount[3], optionCount[4]);
                         let personality = "";
-                        if (max == optionCount[1]) {
+                        if (max == optionCount[1])
                             personality = "adventurous";
-                        } else if (max == optionCount[2]) {
+                        else if (max == optionCount[2])
                             personality = "introvert";
-                        } else if (max == optionCount[3]) {
+                        else if (max == optionCount[3])
                             personality = "peacemaker";
-                        } else if (max == optionCount[4]) {
+                        else if (max == optionCount[4])
                             personality = "confident";
-                        }
 
                         await updateDoc(doc(db, "users", user.id), {
                             profile: true,
