@@ -120,9 +120,9 @@ const Profile = ({ siteName, user, color }) => {
                 <form className='p-5 profile-details'>
                     <h5 className="mb-4 text-uppercase">Other Details</h5>
                     {profileData && profileData.map((val, index) => {
-                        return <div className="mb-3" key={index}>
-                            <label htmlFor="name" className='form-label'><b>{val.question}</b></label>
-                            <textarea className="form-control" value={val.answer} style={{ height: "65px" }} disabled></textarea>
+                        return <div className="mb-3" key={index + 1}>
+                            <label htmlFor="name" className='form-label' style={{ textAlign: "justify" }}><b>{val.question}</b></label>
+                            <textarea className="form-control" value={val.answer} rows={1} disabled></textarea>
                         </div>
                     })}
                 </form>

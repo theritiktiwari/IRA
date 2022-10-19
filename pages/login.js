@@ -56,7 +56,6 @@ const Login = ({ siteName, logo, color }) => {
                     }, process.env.NEXT_PUBLIC_JWT_SECRET_KEY, {
                         expiresIn: "2d"
                     });
-                    console.log(q.docs[0].id);
                     localStorage.setItem("ira-user", JSON.stringify({
                         token: token,
                         id: q.docs[0].id,

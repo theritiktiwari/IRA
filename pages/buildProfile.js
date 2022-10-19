@@ -93,7 +93,7 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
                 option = 0;
             }
 
-            const qq = await getDocs(query(collection(db, "profile-answers"), where("qid", "==", order)));
+            const qq = await getDocs(query(collection(db, "profile-answers"), where("qid", "==", order), where("user_id", "==", user.id)));
             if (!qq.docs.length) {
                 let query = await addDoc(collection(db, "profile-answers"), {
                     question: questions[order].question,
@@ -105,10 +105,7 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
                     tst("Answer submitted successfully", "success");
                     localStorage.setItem("ira-order", JSON.stringify(order + 1));
                     localStorage.setItem("ira-score", JSON.stringify("" + score + option));
-                    setOrder(order + 1);
-                    setScore("" + score + option);
-                    setAnswer("");
-                    if (order == questions.length) {
+                    if (order == questions.length - 1) {
                         let str = JSON.parse(localStorage.getItem("ira-score"));
                         let optionCount = count(str);
                         let max = Math.max(optionCount[1], optionCount[2], optionCount[3], optionCount[4]);
@@ -130,6 +127,9 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
                         localStorage.removeItem("ira-score");
                         router.push('/');
                     }
+                    setOrder(order + 1);
+                    setScore("" + score + option);
+                    setAnswer("");
                 } else {
                     tst("Something went wrong", "error");
                 }
