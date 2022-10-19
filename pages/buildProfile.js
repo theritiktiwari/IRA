@@ -13,6 +13,7 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
     const [questions, setQuestions] = useState();
     const [answer, setAnswer] = useState();
     const [order, setOrder] = useState(0);
+    const [score, setScore] = useState();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -31,14 +32,13 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
     }, [router, user]);
 
     useEffect(() => {
-        setOrder(JSON.parse(localStorage.getItem("ira-order")) || 0);
+        setOrder(JSON.parse(localStorage.getItem("ira-order")) || 1);
+        setScore(localStorage.getItem("ira-score") || "");
         const getData = async () => {
             let q = [];
             const querySnapshot = await getDocs(collection(db, "profile-questions"));
             querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
-                // console.log(doc.id, " => ", doc.data());
-                q.push(doc.data());
+                q[doc.id] = doc.data();
             });
             setQuestions(q);
         }
@@ -62,30 +62,80 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
         }
     }
 
+    const count = (val) => {
+        let count1 = 0;
+        let count2 = 0;
+        let count3 = 0;
+        let count4 = 0;
+        for (let i = 0; i < val.length; i++) {
+            if (val[i] == "1")
+                count1++;
+            else if (val[i] == "2")
+                count2++;
+            else if (val[i] == "3")
+                count3++;
+            else if (val[i] == "4")
+                count4++;
+        }
+        return { 1: count1, 2: count2, 3: count3, 4: count4 };
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         if (answer) {
-            let query = await addDoc(collection(db, "profile-answers"), {
-                question: questions[order].question,
-                answer: answer,
-                user_id: user.id
-            });
-            if (query.id) {
-                tst("Answer submitted successfully", "success");
-                localStorage.setItem("ira-order", JSON.stringify(order + 1));
-                setOrder(order + 1);
-                setAnswer("");
-                if (order == questions.length - 1) {
-                    await updateDoc(doc(db, "users", user.id), {
-                        profile: true,
-                        mood: "sad"
-                    });
-                    localStorage.removeItem("ira-order");
-                    router.push('/');
+            let option = document.querySelector("#option1") && document.querySelector("#option1").checked ? "1" :
+                document.querySelector("#option2") && document.querySelector("#option2").checked ? "2" :
+                    document.querySelector("#option3") && document.querySelector("#option3").checked ? "3" :
+                        document.querySelector("#option4") && document.querySelector("#option4").checked ? "4" : 0;
+
+            if (order == 1 || order == 2 || order == 3 || order == 4 || order == 6 || order == 13 || order == 14) {
+                option = 0;
+            }
+
+            const qq = await getDocs(query(collection(db, "profile-answers"), where("qid", "==", order)));
+            if (!qq.docs.length) {
+                let query = await addDoc(collection(db, "profile-answers"), {
+                    question: questions[order].question,
+                    answer: answer,
+                    qid: order,
+                    user_id: user.id
+                });
+                if (query.id) {
+                    tst("Answer submitted successfully", "success");
+                    localStorage.setItem("ira-order", JSON.stringify(order + 1));
+                    localStorage.setItem("ira-score", JSON.stringify("" + score + option));
+                    setOrder(order + 1);
+                    setScore("" + score + option);
+                    setAnswer("");
+                    if (order == questions.length - 1) {
+                        let str = JSON.parse(localStorage.getItem("ira-score"));
+                        let optionCount = count(str);
+                        let max = Math.max(optionCount[1], optionCount[2], optionCount[3], optionCount[4]);
+                        let personality = "";
+                        if (max == optionCount[1]) {
+                            personality = "adventurous";
+                        } else if (max == optionCount[2]) {
+                            personality = "introvert";
+                        } else if (max == optionCount[3]) {
+                            personality = "peacemaker";
+                        } else if (max == optionCount[4]) {
+                            personality = "confident";
+                        }
+
+                        await updateDoc(doc(db, "users", user.id), {
+                            profile: true,
+                            personality: personality
+                        });
+                        localStorage.removeItem("ira-order");
+                        localStorage.removeItem("ira-score");
+                        router.push('/');
+                    }
+                } else {
+                    tst("Something went wrong", "error");
                 }
             } else {
-                tst("Something went wrong", "error");
+                tst("You have already answered this question", "error");
             }
         } else {
             tst("Please answer the question", "error");
@@ -94,7 +144,7 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
     }
 
     const handleChange = (e) => {
-        if (e.target.name === "answer")
+        if (e.target.name === "answer" || e.target.name === "option")
             setAnswer(e.target.value);
     }
     return (
@@ -116,14 +166,31 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
             <div className="back-to-home">
                 <Link href={"/"}><a>← Home</a></Link>
             </div>
-            <section className="auth d-flex justify-content-center align-items-center" style={{ height: "100vh", width: "100vw" }}>
+            <section className="auth d-flex flex-column justify-content-center align-items-center" style={{ height: "100vh", width: "100vw" }}>
+                <h2 className="text-center my-5">Complete Your Profile</h2>
                 {questions && questions.length > 0 && order < questions.length ? <form onSubmit={handleSubmit} method="POST" className='p-5 w-50'>
                     {/* {logo ? <div className="d-flex justify-content-center align-items-center"><Link href={"/"}><a><img src={logo} alt="logo" className='mb-2' width="100" /></a></Link></div> : null} */}
-                    <h5 className="mb-4 text-uppercase">{questions[order].question}</h5>
-                    <div className=" mb-3">
-                        <label htmlFor="answer" className='form-label'>Answer</label>
+                    <h5 className="mb-4 text-uppercase" style={{ textAlign: "justify" }}>{questions[order].question}</h5>
+                    {questions[order].option1 && <div className="form-check w-100">
+                        <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option1" value={questions[order].option1} />
+                        <label className="form-check-label text-capitalize" htmlFor="option1">{questions[order].option1}</label>
+                    </div>}
+                    {questions[order].option3 && <div className="form-check w-100">
+                        <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option2" value={questions[order].option2} />
+                        <label className="form-check-label text-capitalize" htmlFor="option2">{questions[order].option2}</label>
+                    </div>}
+                    {questions[order].option3 && <div className="form-check w-100">
+                        <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option3" value={questions[order].option3} />
+                        <label className="form-check-label text-capitalize" htmlFor="option3">{questions[order].option3}</label>
+                    </div>}
+                    {questions[order].option4 && <div className="form-check w-100">
+                        <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option4" value={questions[order].option4} />
+                        <label className="form-check-label text-capitalize" htmlFor="option4">{questions[order].option4}</label>
+                    </div>}
+                    {!(questions[order].option1 || questions[order].option2 || questions[order].option3 || questions[order].option4) && <div className="mb-3">
+                        {/* <label htmlFor="answer" className='form-label'>Answer</label> */}
                         <textarea className="form-control" placeholder="Enter your answer here" name="answer" value={answer} onChange={handleChange} id="answer" style={{ height: "100px" }}></textarea>
-                    </div>
+                    </div>}
                     {!loading && <button type="submit" className="btn-main w-100 mt-2">{(order === questions.length - 1) ? "Submit" : "Next"}</button>}
                     {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">
                         <Loader color={color} />

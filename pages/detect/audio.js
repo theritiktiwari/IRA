@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import { doc, addDoc, getDocs, updateDoc, query, where, collection } from "firebase/firestore";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Loader from '../Components/Loader';
+import Loader from '../../Components/Loader';
 
-const Detect = ({ siteName, color, user }) => {
+const Audio = ({ siteName, color, user }) => {
     const router = useRouter();
     const [questions, setQuestions] = useState();
     const [answer, setAnswer] = useState();
@@ -17,9 +17,19 @@ const Detect = ({ siteName, color, user }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (!localStorage.getItem("ira-user"))
+        if (!localStorage.getItem("ira-user")) {
             router.push("/");
-    }, [router]);
+        }
+        const check = async () => {
+            const q = await getDocs(query(collection(db, "users"), where("email", "==", user.email)));
+            if (q.docs.length) {
+                if (q.docs[0].data().profile == false) {
+                    router.push("/buildProfile");
+                }
+            }
+        }
+        check();
+    }, [router, user]);
 
     useEffect(() => {
         setOrder(JSON.parse(localStorage.getItem("ira-detect")) || 0);
@@ -157,4 +167,4 @@ const Detect = ({ siteName, color, user }) => {
     )
 }
 
-export default Detect;
+export default Audio;

@@ -9,11 +9,21 @@ const Report = ({ siteName, color, user }) => {
     const router = useRouter();
     const [suggestions, setSuggestions] = useState();
     const [detect, setDetect] = useState();
+
     useEffect(() => {
         if (!localStorage.getItem("ira-user")) {
             router.push("/");
         }
-    }, [router]);
+        const check = async () => {
+            const q = await getDocs(query(collection(db, "users"), where("email", "==", user.email)));
+            if (q.docs.length) {
+                if (q.docs[0].data().profile == false) {
+                    router.push("/buildProfile");
+                }
+            }
+        }
+        check();
+    }, [router, user]);
 
     useEffect(() => {
         const getData = async () => {
@@ -43,7 +53,8 @@ const Report = ({ siteName, color, user }) => {
                             <th scope="col">S.No.</th>
                             <th scope="col">Name</th>
                             <th scope="col">Test Number</th>
-                            <th scope="col">Score</th>
+                            <th scope="col">Data</th>
+                            <th scope="col">Mood</th>
                             <th scope="col">Suggestion</th>
                         </tr>
                     </thead>
@@ -53,7 +64,8 @@ const Report = ({ siteName, color, user }) => {
                                 <th scope="row">{index + 1}</th>
                                 <td className='text-capitalize'>{user.name}</td>
                                 <td>{val.detect}</td>
-                                <td>{val.score}</td>
+                                <td>{val.percentage}%</td>
+                                <td>{val.mood}</td>
                                 <td className='text-capitalize'>{val.suggestion}</td>
                             </tr>
                         })}
