@@ -66,7 +66,7 @@ const Report = ({ siteName, color, user }) => {
                                 <td>{val.detect}</td>
                                 <td>{val.percentage}%</td>
                                 <td>{val.mood}</td>
-                                <td className='text-capitalize'>{val.suggestion}</td>
+                                <td className='text-capitalize w-50'>{val.suggestion}</td>
                             </tr>
                         })}
                     </tbody>

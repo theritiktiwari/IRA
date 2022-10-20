@@ -7,7 +7,7 @@ import { addDoc, collection } from "firebase/firestore";
 import Loader from '../Components/Loader';
 
 const Result = ({ siteName, logo, user, color }) => {
-    const [data, setData] = useState({ data: 0, length: 0, detect: 0 });
+    const [data, setData] = useState({ data: 0, length: 0, detect: 0, personality: "" });
     const [state, setState] = useState();
     const [suggestion, setSuggestion] = useState();
     const [loading, setLoading] = useState(false);
@@ -21,21 +21,50 @@ const Result = ({ siteName, logo, user, color }) => {
     useEffect(() => {
         const d = JSON.parse(localStorage.getItem("ira-data"));
         if (d) {
-            setData({ data: d.data, length: d.length, detect: d.detect })
+            setData({ data: d.data, length: d.length, detect: d.detect, personality: d.personality });
             let moodData = count(d.data);
             let m = Object.keys(moodData).reduce((a, b) => moodData[a] > moodData[b] ? a : b);
             let moodPercentage = (moodData[m] / d.length) * 100;
-            let mood = (m == 1) ? "Sad" : (m == 2) ? "Happy" : (m == 3) ? "Confused" : (m == 4) ? "LOL" : "";
+            let mood = (m == 1) ? "Sad" : (m == 2) ? "Happy" : (m == 3) ? "Angry" : (m == 4) ? "Confused" : "";
             setState({ mood, moodPercentage });
 
-            if (mood == "Sad")
-                setSuggestion("talk to the therapist");
-            else if (mood == "Happy")
-                setSuggestion("listen some music");
-            else if (mood == "Confused")
-                setSuggestion("talk to friends");
-            else if (mood == "LOL")
-                setSuggestion("go on Trip");
+            if (d.personality == "adventurous") {
+                if (mood == "Happy")
+                    setSuggestion("It's time to be a little adventurous! Is there something you've wanted to do lately or some place you've always wanted to go but never made the time to go there ? Well, now's your chance to do it! Enjoy your time...");
+                else if (mood == "Sad")
+                    setSuggestion("No matter how we're feelings, animals just have a way of making us happy again. Spend some time out in nature observing wildlife...");
+                else if (mood == "Angry")
+                    setSuggestion("Exploring the great outdoors is a magical, yet very humbling experience for everyone.");
+                else if (mood == "Confused")
+                    setSuggestion("A great thing to do when you're confused is to exercise: It helps you go to sleep, reduce stress, increase your energy levels, and most of all - helps you feel happier!");
+            } else if (d.personality == "introvert") {
+                if (mood == "Happy")
+                    setSuggestion("Change up your outfit for the day. Get a haircut or trim up your bangs. Try out a new makeup look. Use a new perfume! Enjoy your day as \"Life is beautiful and so are you!\"");
+                else if (mood == "Sad")
+                    setSuggestion("Get out there and experience a change in scenery. Watch the clouds, take in the trees, and just enjoy a good walk or bike ride. Even if it's just up and down your street - do it!");
+                else if (mood == "Angry")
+                    setSuggestion("Writing in a journal is a great way to cope with one's feelings: It acts almost as if you are sharing your thoughts with someone else, except it's private place just for you... Try writing down what you feel because as we say, \"Pen is the tongue of your mind!\"");
+                else if (mood == "Confused")
+                    setSuggestion("Listen to your favourite songs. Whenever you feel confused, this can be an absolute must for you! Music really does help to soothe a confused soul.");
+            } else if (d.personality == "peacemaker") {
+                if (mood == "Happy")
+                    setSuggestion("Comfort food is the best. Especially when you eat it while watching your favourite YouTube channel or television show. Try whipping up your favourite comfort food and relish the taste of your food because I would say \"Good food, Great life!!\"");
+                else if (mood == "Sad")
+                    setSuggestion("Do what you need to do. Is there one thing in your life that you have an inkling of a feeling you should try, but the easy thing to do is avoid it? To keep living life as you are living it now?");
+                else if (mood == "Angry")
+                    setSuggestion("It can be really helpful to write a list about everything you love about yourself.");
+                else if (mood == "Confused")
+                    setSuggestion("Sometimes the best thing to do when we're confused is to go inwards. Sit yourself down with some coffee or tea, a notebook, and have a conversation with yourself.");
+            } else if (d.personality == "confident") {
+                if (mood == "Happy")
+                    setSuggestion("Go to a local thrift store or find a new boutique somewhere - And buy something that adds on to your happiness!");
+                else if (mood == "Sad")
+                    setSuggestion("You can go spend some time with your friends . Talk it out with them... Or even if you don't, spending time with them just takes you away from your sad emotions and helps brings a smile to your face.");
+                else if (mood == "Angry")
+                    setSuggestion("When life gets a bit overwhelming, it can be a good idea to take a break from social media.");
+                else if (mood == "Confused")
+                    setSuggestion("Books are the best way to go for a little escape from reality. One book I highly recommend for you is The Book of Awakening by Mark Nepo.");
+            }
         } else {
             router.push("/");
         }
@@ -86,7 +115,7 @@ const Result = ({ siteName, logo, user, color }) => {
                     {logo ? <div className="d-flex justify-content-center align-items-center"><img src={logo} alt="logo" className='mb-2' width="100" /></div> : null}
                     <h5 className="mb-4 text-uppercase text-center display-6 fw-bold">Results</h5>
                     <div className='text-center'>You are <span className='fw-bold'>{state.moodPercentage}% {state.mood}</span></div>
-                    <div className='text-center'>We&apos;ll suggest you to <span className='fw-bold'>{suggestion}.</span></div>
+                    <div className='text-center fw-bold mt-2'>{suggestion}</div>
                     {!loading && <button type="submit" className="btn-main w-100 mt-3">Back to Home</button>}
                     {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">
                         <Loader color={color} />

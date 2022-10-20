@@ -14,6 +14,7 @@ const Text = ({ siteName, color, user }) => {
     const [order, setOrder] = useState();
     const [score, setScore] = useState("");
     const [detect, setDetect] = useState();
+    const [personality, setPersonality] = useState();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -32,16 +33,17 @@ const Text = ({ siteName, color, user }) => {
     }, [router, user]);
 
     useEffect(() => {
-        setOrder(JSON.parse(localStorage.getItem("ira-detect")) || 0);
+        setOrder(JSON.parse(localStorage.getItem("ira-detect")) || 1);
         setScore(JSON.parse(localStorage.getItem("ira-score")) || "");
         const getData = async () => {
             const u = await getDocs(query(collection(db, "users"), where("email", "==", user.email)));
             if (u.docs.length) {
+                setPersonality(u.docs[0].data().personality);
                 setDetect(u.docs[0].data().detect || 0);
                 let q = [];
                 const querySnapshot = await getDocs(collection(db, `${u.docs[0].data().personality}-questions-detection`));
                 querySnapshot.forEach((doc) => {
-                    q.push(doc.data());
+                    q[doc.id] = doc.data();
                 });
                 setQuestions(q);
             }
@@ -75,6 +77,10 @@ const Text = ({ siteName, color, user }) => {
                     document.querySelector("#option3") && document.querySelector("#option3").checked ? "3" :
                         document.querySelector("#option4") && document.querySelector("#option4").checked ? "4" : 0;
 
+            if (order == 2 || order == 3) {
+                option = 0;
+            }
+
             let query = await addDoc(collection(db, "detection"), {
                 question: questions[order].question,
                 answer: answer,
@@ -91,9 +97,10 @@ const Text = ({ siteName, color, user }) => {
                         detect: detect + 1,
                     });
                     localStorage.setItem("ira-data", JSON.stringify({
-                        data: (score + option),
+                        data: ("" + score + option),
                         length: questions.length,
-                        detect: detect + 1
+                        detect: detect + 1,
+                        personality: personality
                     }));
                     localStorage.removeItem("ira-score");
                     localStorage.removeItem("ira-detect");
@@ -113,7 +120,7 @@ const Text = ({ siteName, color, user }) => {
     }
 
     const handleChange = (e) => {
-        if (e.target.name === "option")
+        if (e.target.name === "answer" || e.target.name === "option")
             setAnswer(e.target.value);
     }
 
@@ -137,24 +144,26 @@ const Text = ({ siteName, color, user }) => {
                 {questions && questions.length > 0 && order < questions.length ? <>
                     <form onSubmit={handleSubmit} method="POST" className='p-5'>
                         <h5 className="mb-4">{questions[order].question}</h5>
-                        <div className='d-flex justify-content-between align-items-center flex-wrap'>
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option1" value={questions[order].option1} />
-                                <label className="form-check-label text-capitalize" htmlFor="option1">{questions[order].option1}</label>
-                            </div>
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option2" value={questions[order].option2} />
-                                <label className="form-check-label text-capitalize" htmlFor="option2">{questions[order].option2}</label>
-                            </div>
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option3" value={questions[order].option3} />
-                                <label className="form-check-label text-capitalize" htmlFor="option3">{questions[order].option3}</label>
-                            </div>
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option4" value={questions[order].option4} />
-                                <label className="form-check-label text-capitalize" htmlFor="option4">{questions[order].option4}</label>
-                            </div>
-                        </div>
+                        {questions[order].option1 && <div className="form-check w-100">
+                            <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option1" value={questions[order].option1} />
+                            <label className="form-check-label text-capitalize" htmlFor="option1">{questions[order].option1}</label>
+                        </div>}
+                        {questions[order].option3 && <div className="form-check w-100">
+                            <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option2" value={questions[order].option2} />
+                            <label className="form-check-label text-capitalize" htmlFor="option2">{questions[order].option2}</label>
+                        </div>}
+                        {questions[order].option3 && <div className="form-check w-100">
+                            <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option3" value={questions[order].option3} />
+                            <label className="form-check-label text-capitalize" htmlFor="option3">{questions[order].option3}</label>
+                        </div>}
+                        {questions[order].option4 && <div className="form-check w-100">
+                            <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option4" value={questions[order].option4} />
+                            <label className="form-check-label text-capitalize" htmlFor="option4">{questions[order].option4}</label>
+                        </div>}
+                        {!(questions[order].option1 || questions[order].option2 || questions[order].option3 || questions[order].option4) && <div className="mb-3">
+                            {/* <label htmlFor="answer" className='form-label'>Answer</label> */}
+                            <textarea className="form-control" placeholder="Enter your answer here" name="answer" value={answer} onChange={handleChange} id="answer" style={{ height: "100px" }}></textarea>
+                        </div>}
                         {!loading && <button type="submit" className="btn-main w-100 mt-3">{(order === questions.length - 1) ? "Submit" : "Next"}</button>}
                         {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">
                             <Loader color={color} />
