@@ -25,7 +25,7 @@ const Result = ({ siteName, logo, user, color }) => {
             let moodData = count(d.data);
             let m = Object.keys(moodData).reduce((a, b) => moodData[a] > moodData[b] ? a : b);
             let moodPercentage = Math.round((moodData[m] / d.length) * 100);
-            let mood = (m == 1) ? "Sad" : (m == 2) ? "Happy" : (m == 3) ? "Angry" : (m == 4) ? "Confused" : "";
+            let mood = (m == 1) ? "Happy" : (m == 2) ? "Sad" : (m == 3) ? "Angry" : (m == 4) ? "Confused" : "";
             setState({ mood, moodPercentage });
 
             if (d.personality == "adventurous") {
