@@ -24,7 +24,7 @@ const Result = ({ siteName, logo, user, color }) => {
             setData({ data: d.data, length: d.length, detect: d.detect, personality: d.personality });
             let moodData = count(d.data);
             let m = Object.keys(moodData).reduce((a, b) => moodData[a] > moodData[b] ? a : b);
-            let moodPercentage = (moodData[m] / d.length) * 100;
+            let moodPercentage = Math.round((moodData[m] / d.length) * 100);
             let mood = (m == 1) ? "Sad" : (m == 2) ? "Happy" : (m == 3) ? "Angry" : (m == 4) ? "Confused" : "";
             setState({ mood, moodPercentage });
 
@@ -32,38 +32,38 @@ const Result = ({ siteName, logo, user, color }) => {
                 if (mood == "Happy")
                     setSuggestion("It's time to be a little adventurous! Is there something you've wanted to do lately or some place you've always wanted to go but never made the time to go there ? Well, now's your chance to do it! Enjoy your time...");
                 else if (mood == "Sad")
-                    setSuggestion("No matter how we're feelings, animals just have a way of making us happy again. Spend some time out in nature observing wildlife...");
+                    setSuggestion("No matter how we're feelings, animals just have a way of making us happy again. Spend some time out in nature observing wildlife...\n Even just petting someone else's dog or seeing dogs enjoy their walks can really brighten your day maybe ? ");
                 else if (mood == "Angry")
-                    setSuggestion("Exploring the great outdoors is a magical, yet very humbling experience for everyone.");
+                    setSuggestion("Exploring the great outdoors is a magical, yet very humbling experience for everyone.\n Go visit your local park, the mountains, a field, the beach, a river, or the desert. It's one of the best solutions for an angry heart.");
                 else if (mood == "Confused")
                     setSuggestion("A great thing to do when you're confused is to exercise: It helps you go to sleep, reduce stress, increase your energy levels, and most of all - helps you feel happier!");
             } else if (d.personality == "introvert") {
                 if (mood == "Happy")
-                    setSuggestion("Change up your outfit for the day. Get a haircut or trim up your bangs. Try out a new makeup look. Use a new perfume! Enjoy your day as \"Life is beautiful and so are you!\"");
+                    setSuggestion("Change up your outfit for the day. Get a haircut or trim up your bangs. Try out a new makeup look. Use a new perfume! Enjoy your day as \"Life is beautiful and so are you!\" \n Spending sometime pampering yourself can be a good way to celebrate!");
                 else if (mood == "Sad")
-                    setSuggestion("Get out there and experience a change in scenery. Watch the clouds, take in the trees, and just enjoy a good walk or bike ride. Even if it's just up and down your street - do it!");
+                    setSuggestion("Get out there and experience a change in scenery. Watch the clouds, take in the trees, and just enjoy a good walk or bike ride. Even if it's just up and down your street - do it! \n \"Sometimes, the nature is all that you need.\"");
                 else if (mood == "Angry")
                     setSuggestion("Writing in a journal is a great way to cope with one's feelings: It acts almost as if you are sharing your thoughts with someone else, except it's private place just for you... Try writing down what you feel because as we say, \"Pen is the tongue of your mind!\"");
                 else if (mood == "Confused")
-                    setSuggestion("Listen to your favourite songs. Whenever you feel confused, this can be an absolute must for you! Music really does help to soothe a confused soul.");
+                    setSuggestion("Listen to your favourite songs. Whenever you feel confused, this can be an absolute must for you! Music really does help to soothe a confused soul. \n And as you’re listening to your favourite songs, why don’t you dance along to them too ? Cause you know what ? Music and rhythm are to the soul what words are to the mind...");
             } else if (d.personality == "peacemaker") {
                 if (mood == "Happy")
                     setSuggestion("Comfort food is the best. Especially when you eat it while watching your favourite YouTube channel or television show. Try whipping up your favourite comfort food and relish the taste of your food because I would say \"Good food, Great life!!\"");
                 else if (mood == "Sad")
-                    setSuggestion("Do what you need to do. Is there one thing in your life that you have an inkling of a feeling you should try, but the easy thing to do is avoid it? To keep living life as you are living it now?");
+                    setSuggestion("Do what you need to do. Is there one thing in your life that you have an inkling of a feeling you should try, but the easy thing to do is avoid it? To keep living life as you are living it now? \n So - go on! We have a long life to live - spend it chasing your passions.");
                 else if (mood == "Angry")
-                    setSuggestion("It can be really helpful to write a list about everything you love about yourself.");
+                    setSuggestion("It can be really helpful to write a list about everything you love about yourself. \n Remind yourself of these things everyday while building onto that list.Recognize the good - and remember what an amazing person you are, no matter what you may be feeling right now. You are amazing!");
                 else if (mood == "Confused")
-                    setSuggestion("Sometimes the best thing to do when we're confused is to go inwards. Sit yourself down with some coffee or tea, a notebook, and have a conversation with yourself.");
+                    setSuggestion("Sometimes the best thing to do when we're confused is to go inwards. Sit yourself down with some coffee or tea, a notebook, and have a conversation with yourself. \n Sometimes we get so caught up trying to learn about the world around us that we completely ignore what is going on inside ourselves!");
             } else if (d.personality == "confident") {
                 if (mood == "Happy")
-                    setSuggestion("Go to a local thrift store or find a new boutique somewhere - And buy something that adds on to your happiness!");
+                    setSuggestion("Go to a local thrift store or find a new boutique somewhere - And buy something that adds on to your happiness! \n It's the element of surprise, plus the little quirkiness and cute that makes finding that item to special. The feeling of finding treasures and beautiful unique items that you wouldn't be able to find otherwise is beautiful!");
                 else if (mood == "Sad")
                     setSuggestion("You can go spend some time with your friends . Talk it out with them... Or even if you don't, spending time with them just takes you away from your sad emotions and helps brings a smile to your face.");
                 else if (mood == "Angry")
-                    setSuggestion("When life gets a bit overwhelming, it can be a good idea to take a break from social media.");
+                    setSuggestion("When life gets a bit overwhelming, it can be a good idea to take a break from social media. \n I know many of us have our social media as practically a part of ourselves, but really... it's not.Spend some time with yourself, it will be beautiful indeed!");
                 else if (mood == "Confused")
-                    setSuggestion("Books are the best way to go for a little escape from reality. One book I highly recommend for you is The Book of Awakening by Mark Nepo.");
+                    setSuggestion("Books are the best way to go for a little escape from reality. One book I highly recommend for you is The Book of Awakening by Mark Nepo. \n Good books don’t give up all their secrets at once, and it helps you so much to bring clarity to your life and your thoughts!");
             }
         } else {
             router.push("/");
