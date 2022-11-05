@@ -32,6 +32,7 @@ const Report = ({ siteName, color, user }) => {
             querySnapshot.forEach((doc) => {
                 sugg.push(doc.data());
             });
+            sugg.sort((a, b) => a.detect - b.detect);
             setSuggestions(sugg);
             const u = await getDocs(query(collection(db, "users"), where("email", "==", user.email)));
             if (u.docs.length) {
@@ -45,14 +46,13 @@ const Report = ({ siteName, color, user }) => {
             <Head>
                 <title>Report | {siteName}</title>
             </Head>
-            <section className="container pt-5 mt-5" style={{ height: "80vh" }}>
+            <section className="container pt-5 mt-5">
                 <h1 className="display-5 text-center fw-bold text-uppercase mb-4">Report</h1>
                 {(detect && suggestions) ? <table class="table table-responsive text-center">
                     <thead>
                         <tr>
                             <th scope="col">S.No.</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Test Number</th>
                             <th scope="col">Data</th>
                             <th scope="col">Mood</th>
                             <th scope="col">Suggestion</th>
@@ -63,7 +63,6 @@ const Report = ({ siteName, color, user }) => {
                             return <tr key={index}>
                                 <th scope="row">{index + 1}</th>
                                 <td className='text-capitalize'>{user.name}</td>
-                                <td>{val.detect}</td>
                                 <td>{val.percentage}%</td>
                                 <td>{val.mood}</td>
                                 <td className='text-capitalize w-50'>{val.suggestion}</td>

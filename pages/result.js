@@ -7,7 +7,7 @@ import { addDoc, collection } from "firebase/firestore";
 import Loader from '../Components/Loader';
 
 const Result = ({ siteName, logo, user, color }) => {
-    const [data, setData] = useState({ data: 0, length: 0, detect: 0, personality: "" });
+    const [data, setData] = useState({ type: "", data: 0, length: 0, detect: 0, personality: "" });
     const [state, setState] = useState();
     const [suggestion, setSuggestion] = useState();
     const [loading, setLoading] = useState(false);
@@ -21,12 +21,20 @@ const Result = ({ siteName, logo, user, color }) => {
     useEffect(() => {
         const d = JSON.parse(localStorage.getItem("ira-data"));
         if (d) {
-            setData({ data: d.data, length: d.length, detect: d.detect, personality: d.personality });
-            let moodData = count(d.data);
-            let m = Object.keys(moodData).reduce((a, b) => moodData[a] > moodData[b] ? a : b);
-            let moodPercentage = Math.round((moodData[m] / d.length) * 100);
-            let mood = (m == 1) ? "Happy" : (m == 2) ? "Sad" : (m == 3) ? "Angry" : (m == 4) ? "Confused" : "";
-            setState({ mood, moodPercentage });
+            setData({ type: d.type, data: d.data, length: d.length, detect: d.detect, personality: d.personality });
+            var mood;
+            if (d.type == "text") {
+                let moodData = count(d.data);
+                let m = Object.keys(moodData).reduce((a, b) => moodData[a] > moodData[b] ? a : b);
+                let moodPercentage = Math.round((moodData[m] / d.length) * 100);
+                mood = (m == 1) ? "Happy" : (m == 2) ? "Sad" : (m == 3) ? "Angry" : (m == 4) ? "Confused" : "";
+                setState({ mood, moodPercentage });
+            } else if (d.type == "audio") {
+                let moodData = Number((d.data / (d.length - 1)).toFixed(2));
+                let moodPercentage = Math.round((moodData / 200) * 100);
+                mood = (moodData >= 100 && moodData <= 150) ? "Happy" : (moodData > 150 && moodData <= 200) ? "Sad" : (moodData > 200 && moodData <= 250) ? "Angry" : (moodData > 250 && moodData <= 300) ? "Confused" : "";
+                setState({ mood, moodPercentage });
+            }
 
             if (d.personality == "adventurous") {
                 if (mood == "Happy")
@@ -61,9 +69,9 @@ const Result = ({ siteName, logo, user, color }) => {
                 else if (mood == "Sad")
                     setSuggestion("You can go spend some time with your friends . Talk it out with them... Or even if you don't, spending time with them just takes you away from your sad emotions and helps brings a smile to your face.");
                 else if (mood == "Angry")
-                    setSuggestion("When life gets a bit overwhelming, it can be a good idea to take a break from social media. \n I know many of us have our social media as practically a part of ourselves, but really... it's not.Spend some time with yourself, it will be beautiful indeed!");
+                    setSuggestion("When life gets a bit overwhelming, it can be a good idea to take a break from social media. \n I know many of us have our social media as practically a part of ourselves, but really... it's not. Spend some time with yourself, it will be beautiful indeed!");
                 else if (mood == "Confused")
-                    setSuggestion("Books are the best way to go for a little escape from reality. One book I highly recommend for you is The Book of Awakening by Mark Nepo. \n Good books don’t give up all their secrets at once, and it helps you so much to bring clarity to your life and your thoughts!");
+                    setSuggestion("Books are the best way to go for a little escape from reality. One book I highly recommend for you is The Book of Awakening by Mark Nepo. \n Good books don't give up all their secrets at once, and it helps you so much to bring clarity to your life and your thoughts!");
             }
         } else {
             router.push("/");
@@ -114,7 +122,7 @@ const Result = ({ siteName, logo, user, color }) => {
                 {(data && suggestion) ? <form method="POST" className='p-5' onSubmit={handleSubmit}>
                     {logo ? <div className="d-flex justify-content-center align-items-center"><img src={logo} alt="logo" className='mb-2' width="100" /></div> : null}
                     <h5 className="mb-4 text-uppercase text-center display-6 fw-bold">Results</h5>
-                    <div className='text-center'>You are <span className='fw-bold'>{state.moodPercentage}% {state.mood}</span></div>
+                    <div className='text-center'>You are <span className='fw-bold'>{state.moodPercentage && `${state.moodPercentage}%`} {state.mood}</span></div>
                     <div className='text-center fw-bold mt-2'>{suggestion}</div>
                     {!loading && <button type="submit" className="btn-main w-100 mt-3">Back to Home</button>}
                     {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">

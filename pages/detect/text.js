@@ -97,6 +97,7 @@ const Text = ({ siteName, color, user }) => {
                         detect: detect + 1,
                     });
                     localStorage.setItem("ira-data", JSON.stringify({
+                        type: "text",
                         data: ("" + score + option),
                         length: questions.length,
                         detect: detect + 1,

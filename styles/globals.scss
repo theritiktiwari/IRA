@@ -220,6 +220,21 @@ footer .name {
     width: 75%;
 }
 
+// Detect 
+.videobox {
+    height: 70%;
+    border: 2px solid $secondary-color;
+    overflow: hidden;
+}
+
+.audiobox {
+    height: 20%;
+    overflow: hidden;
+    border: 2px solid $secondary-color;
+    border-top: none;
+    background-color: #000;
+}
+
 // Responsiveness
 @media (max-width: 1000px) {
     .about .bg {
