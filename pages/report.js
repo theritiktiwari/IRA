@@ -48,7 +48,7 @@ const Report = ({ siteName, color, user }) => {
             </Head>
             <section className="container pt-5 mt-5">
                 <h1 className="display-5 text-center fw-bold text-uppercase mb-4">Report</h1>
-                {(detect && suggestions) ? <table class="table table-responsive text-center">
+                {(detect && suggestions) ? <table class="table table-responsive text-center align-middle">
                     <thead>
                         <tr>
                             <th scope="col">S.No.</th>
@@ -63,9 +63,9 @@ const Report = ({ siteName, color, user }) => {
                             return <tr key={index}>
                                 <th scope="row">{index + 1}</th>
                                 <td className='text-capitalize'>{user.name}</td>
-                                <td>{val.percentage}%</td>
+                                <td>{val.percentage ? `${val.percentage}%` : "-"}</td>
                                 <td>{val.mood}</td>
-                                <td className='text-capitalize w-50'>{val.suggestion}</td>
+                                <td className='w-50'>{val.suggestion}</td>
                             </tr>
                         })}
                     </tbody>

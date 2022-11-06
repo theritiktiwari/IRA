@@ -31,9 +31,8 @@ const Result = ({ siteName, logo, user, color }) => {
                 setState({ mood, moodPercentage });
             } else if (d.type == "audio") {
                 let moodData = Number((d.data / (d.length - 1)).toFixed(2));
-                let moodPercentage = Math.round((moodData / 200) * 100);
-                mood = (moodData >= 100 && moodData <= 150) ? "Happy" : (moodData > 150 && moodData <= 200) ? "Sad" : (moodData > 200 && moodData <= 250) ? "Angry" : (moodData > 250 && moodData <= 300) ? "Confused" : "";
-                setState({ mood, moodPercentage });
+                mood = (moodData >= 0 && moodData <= 160) ? "Sad" : (moodData > 160 && moodData <= 230) ? "Confused" : (moodData > 230 && moodData <= 300) ? "Happy" : (moodData > 300) ? "Angry" : "";
+                setState({ mood });
             }
 
             if (d.personality == "adventurous") {
@@ -99,13 +98,23 @@ const Result = ({ siteName, logo, user, color }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        let query = await addDoc(collection(db, "suggestions"), {
-            detect: data.detect,
-            mood: state.mood,
-            percentage: state.moodPercentage,
-            suggestion: suggestion,
-            user_id: user.id
-        });
+        var query;
+        if (state.moodPercentage) {
+            query = await addDoc(collection(db, "suggestions"), {
+                detect: data.detect,
+                mood: state.mood,
+                percentage: state.moodPercentage,
+                suggestion: suggestion,
+                user_id: user.id
+            });
+        } else {
+            query = await addDoc(collection(db, "suggestions"), {
+                detect: data.detect,
+                mood: state.mood,
+                suggestion: suggestion,
+                user_id: user.id
+            });
+        }
         if (query.id) {
             localStorage.removeItem("ira-data");
             router.push('/');
@@ -118,11 +127,12 @@ const Result = ({ siteName, logo, user, color }) => {
             <Head>
                 <title>Results | {siteName}</title>
             </Head>
-            <section className="d-flex justify-content-center align-items-center" style={{ height: "100vh", width: "100vw" }}>
+            <section className="d-flex justify-content-center align-items-center" style={{ height: "100vh", width: "100vw", background: "linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(126, 27, 64, 1) 20%, rgba(253, 54, 92, 1) 73%, rgba(0, 212, 255, 1) 100%)" }}>
                 {(data && suggestion) ? <form method="POST" className='p-5' onSubmit={handleSubmit}>
                     {logo ? <div className="d-flex justify-content-center align-items-center"><img src={logo} alt="logo" className='mb-2' width="100" /></div> : null}
                     <h5 className="mb-4 text-uppercase text-center display-6 fw-bold">Results</h5>
-                    <div className='text-center'>You are <span className='fw-bold'>{state.moodPercentage && `${state.moodPercentage}%`} {state.mood}</span></div>
+                    {state.moodPercentage && <div className='text-center'>You are <span className='fw-bold'>{state.moodPercentage}% {state.mood}</span></div>}
+                    {!state.moodPercentage && <div className='text-center'>You seem to be <span className='fw-bold'>{state.mood}</span></div>}
                     <div className='text-center fw-bold mt-2'>{suggestion}</div>
                     {!loading && <button type="submit" className="btn-main w-100 mt-3">Back to Home</button>}
                     {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">

@@ -7,6 +7,8 @@ import { doc, addDoc, getDocs, updateDoc, query, where, collection } from "fireb
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../Components/Loader';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 const BuildProfile = ({ siteName, logo, color, user }) => {
     const router = useRouter();
@@ -14,6 +16,7 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
     const [answer, setAnswer] = useState();
     const [order, setOrder] = useState(0);
     const [score, setScore] = useState();
+    const [totalQuestions, setTotalQuestions] = useState();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -41,6 +44,7 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
                 q[doc.id] = doc.data();
             });
             setQuestions(q);
+            setTotalQuestions(q.length);
         }
         getData();
     }, []);
@@ -135,6 +139,21 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
                 }
             } else {
                 tst("You have already answered this question", "error");
+                localStorage.setItem("ira-order", JSON.stringify(order + 1));
+                setOrder(order + 1);
+                if (order == questions.length - 1) {
+                    const q = await getDocs(query(collection(db, "users"), where("email", "==", user.email)));
+                    if (q.docs.length) {
+                        if (q.docs[0].data().personality) {
+                            await updateDoc(doc(db, "users", user.id), {
+                                profile: true,
+                            });
+                            localStorage.removeItem("ira-order");
+                            localStorage.removeItem("ira-score");
+                            router.push('/');
+                        }
+                    }
+                }
             }
         } else {
             tst("Please answer the question", "error");
@@ -165,10 +184,20 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
             <div className="back-to-home">
                 <Link href={"/"}><a>← Home</a></Link>
             </div>
-            <section className="auth d-flex flex-column justify-content-center align-items-center" style={{ height: "100vh", width: "100vw" }}>
-                <h2 className="text-center my-5">Complete Your Profile</h2>
+            <div className="progress-bar">
+                <CircularProgressbar
+                    value={(order == 1) ? 0 : (order / totalQuestions) * 100}
+                    text={(order == 1) ? '0%' : `${Number(((order / totalQuestions) * 100).toFixed(1))}%`}
+                    styles={buildStyles({
+                        pathColor: "#FD365C",
+                        textColor: "#FD365C",
+                        trailColor: "#FFFFFF",
+                    })}
+                />
+            </div>
+            <section className="auth d-flex flex-column justify-content-center align-items-center pb-5" style={{ minHeight: "100vh", width: "100vw", background: "linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(126, 27, 64, 1) 20%, rgba(253, 54, 92, 1) 73%, rgba(0, 212, 255, 1) 100%)" }}>
+                <h2 className="text-center my-5 text-light">Complete Your Profile</h2>
                 {questions && questions.length > 0 && order < questions.length ? <form onSubmit={handleSubmit} method="POST" className='p-5 w-50'>
-                    {/* {logo ? <div className="d-flex justify-content-center align-items-center"><Link href={"/"}><a><img src={logo} alt="logo" className='mb-2' width="100" /></a></Link></div> : null} */}
                     <h5 className="mb-4 text-uppercase" style={{ textAlign: "justify" }}>{questions[order].question}</h5>
                     {questions[order].option1 && <div className="form-check w-100">
                         <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option1" value={questions[order].option1} />
@@ -186,9 +215,12 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
                         <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option4" value={questions[order].option4} />
                         <label className="form-check-label text-capitalize" htmlFor="option4">{questions[order].option4}</label>
                     </div>}
-                    {!(questions[order].option1 || questions[order].option2 || questions[order].option3 || questions[order].option4) && <div className="mb-3">
+                    {(order !== 1) && (!(questions[order].option1 || questions[order].option2 || questions[order].option3 || questions[order].option4)) && <div className="mb-3">
                         {/* <label htmlFor="answer" className='form-label'>Answer</label> */}
                         <textarea className="form-control" placeholder="Enter your answer here" name="answer" value={answer} onChange={handleChange} id="answer" style={{ height: "100px" }}></textarea>
+                    </div>}
+                    {(order == 1) && (!(questions[order].option1 || questions[order].option2 || questions[order].option3 || questions[order].option4)) && <div className="mb-3">
+                        <input type="number" className="form-control" placeholder="Enter your answer here" name="answer" value={answer} onChange={handleChange} id="answer" />
                     </div>}
                     {!loading && <button type="submit" className="btn-main w-100 mt-2">{(order === questions.length - 1) ? "Submit" : "Next"}</button>}
                     {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">

@@ -72,13 +72,13 @@ const Reset = ({ siteName, logo, color }) => {
             <div className="back-to-home">
                 <Link href={"/"}><a>← Home</a></Link>
             </div>
-            <section className="auth d-flex justify-content-center align-items-center" style={{ height: "100vh", width: "100vw" }}>
-                <form onSubmit={handleSubmit} method="POST" className='p-5'>
+            <section className="auth d-flex justify-content-center align-items-center" style={{ height: "100vh", width: "100vw", background: "linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(126, 27, 64, 1) 20%, rgba(253, 54, 92, 1) 73%, rgba(0, 212, 255, 1) 100%)" }}>
+                <form onSubmit={handleSubmit} method="POST" className='pt-3 px-5 pb-5'>
                     {logo ? <div className="d-flex justify-content-center align-items-center"><Link href={"/"}><a><img src={logo} alt="logo" className='mb-2' width="100" /></a></Link></div> : null}
                     <h5 className="mb-4 text-uppercase">Reset Password</h5>
-                    <div className="form-floating mb-3">
-                        <input type="email" className="form-control" value={email} onChange={handleChange} name="email" id="email" placeholder="name@example.com" />
+                    <div className="mb-3">
                         <label htmlFor="email">Email address</label>
+                        <input type="email" className="form-control" value={email} onChange={handleChange} name="email" id="email" placeholder="name@example.com" />
                     </div>
                     {!loading && <button type="submit" className="btn-main w-100 mt-2">Reset Now</button>}
                     {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">

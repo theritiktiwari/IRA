@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { db } from "../../firebase";
 import { doc, addDoc, getDocs, updateDoc, query, where, collection } from "firebase/firestore";
@@ -7,6 +8,8 @@ import Speech from 'speak-tts';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../../Components/Loader';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 const Audio = ({ siteName, color, user }) => {
     const router = useRouter();
@@ -14,8 +17,8 @@ const Audio = ({ siteName, color, user }) => {
     const [order, setOrder] = useState();
     const [score, setScore] = useState();
     const [detect, setDetect] = useState();
+    const [totalQuestions, setTotalQuestions] = useState();
     const [personality, setPersonality] = useState();
-    const [voice, setVoice] = useState(false);
     const [loading, setLoading] = useState(false);
     var val = [];
     const videoRef = useRef(null);
@@ -66,6 +69,7 @@ const Audio = ({ siteName, color, user }) => {
                     q[doc.id] = doc.data();
                 });
                 setQuestions(q);
+                setTotalQuestions(q.length);
             }
         }
         getData();
@@ -73,13 +77,21 @@ const Audio = ({ siteName, color, user }) => {
 
     useEffect(() => {
         if (document.getElementById("question") && questions) {
-            const speech = new Speech()
-            speech.init().then((data) => {
+            const speech = new Speech();
+
+            speech.init({
+                'listeners': {
+                    'onvoiceschanged': (voices) => {
+                        console.log("Event voiceschanged", voices)
+                    }
+                }
+            }).then((data) => {
                 // The "data" object contains the list of available voices and the voice synthesis params
                 // console.log("Speech is ready, voices are available", data)
             }).catch(e => {
                 // console.error("An error occured while initializing : ", e)
             })
+            speech.setVoice("Veena");
             speech.speak({
                 text: questions[order].question,
             }).then(() => {
@@ -88,7 +100,7 @@ const Audio = ({ siteName, color, user }) => {
                 // console.error("An error occurred :", e)
             })
         }
-    }, [order]);
+    }, [order, router]);
 
     const tst = (msg, type) => {
         const data = {
@@ -107,7 +119,7 @@ const Audio = ({ siteName, color, user }) => {
         }
     }
 
-    const init = () => {
+    const audioStart = () => {
         var source;
         var audioContext = new (window.AudioContext || window.webkitAudioContext)();
         var analyser = audioContext.createAnalyser();
@@ -203,25 +215,13 @@ const Audio = ({ siteName, color, user }) => {
                 analyser.getFloatTimeDomainData(buffer);
                 var autoCorrelateValue = autoCorrelate(buffer, audioContext.sampleRate)
 
-                // Handle rounding
                 var valueToDisplay = autoCorrelateValue;
-                // var roundingValue = document.querySelector('input[name="rounding"]:checked').value
-                // if (roundingValue == 'none') {
-                // Do nothing
-                // } else if (roundingValue == 'hz') {
                 valueToDisplay = Math.round(valueToDisplay);
-                // } else {
-                // Get the closest note
-                // Thanks to PitchDetect:
-                // valueToDisplay = noteStrings[noteFromPitch(autoCorrelateValue) % 12];
-                // }
-
 
                 if (autoCorrelateValue === -1) {
-                    document.getElementById('note') ? document.getElementById('note').innerText = '0 Hz' : null;
+                    document.getElementById('note') ? document.getElementById('note').innerText = 'Too quiet...' : null;
                     return;
                 }
-
 
                 function noteIsSimilarEnough() {
                     // Check threshold for number, or just difference for notes.
@@ -286,9 +286,8 @@ const Audio = ({ siteName, color, user }) => {
                 };
                 drawAlt();
             }
-
-            drawFrequency();
             drawNote();
+            drawFrequency();
         }
     }
 
@@ -419,7 +418,7 @@ const Audio = ({ siteName, color, user }) => {
                 tst("Something went wrong", "error");
             }
         } else {
-            tst("Please answer the question", "error");
+            tst("Please say again", "error");
         }
         setLoading(false);
     }
@@ -440,7 +439,21 @@ const Audio = ({ siteName, color, user }) => {
             <Head>
                 <title>Mood Detection | {siteName}</title>
             </Head>
-            <section className="d-flex justify-content-center align-items-center flex-wrap" style={{ height: "100vh", width: "100vw" }}>
+            <div className="back-to-home">
+                <Link href={"/"}><a>← Home</a></Link>
+            </div>
+            <div className="progress-bar">
+                <CircularProgressbar
+                    value={(order == 1) ? 0 : (order / totalQuestions) * 100}
+                    text={(order == 1) ? '0%' : `${Number(((order / totalQuestions) * 100).toFixed(1))}%`}
+                    styles={buildStyles({
+                        pathColor: "#FD365C",
+                        textColor: "#FD365C",
+                        trailColor: "#FFFFFF",
+                    })}
+                />
+            </div>
+            <section className="d-flex justify-content-center align-items-center flex-wrap" style={{ height: "100vh", width: "100vw", background: "linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(126, 27, 64, 1) 20%, rgba(253, 54, 92, 1) 73%, rgba(0, 212, 255, 1) 100%)" }}>
                 {questions && questions.length > 0 && order < questions.length ? <>
                     <div className="mx-5" style={{ width: "40%", height: "70%" }}>
                         <div className="videobox">
@@ -451,15 +464,14 @@ const Audio = ({ siteName, color, user }) => {
                         </div>
                         <div className="d-flex justify-content-between align-items-center">
                             <div className="btns d-flex justify-content-center align-items-center">
-                                <button id="init" className='btn btn-sm m-2' onClick={init}>Start</button>
-                                {!loading && <button id="init" className='btn btn-sm m-2' onClick={handleSubmit}>Stop</button>}
+                                <button className='btn btn-sm m-2 text-light' onClick={audioStart}>Start</button>
+                                {!loading && <button className='btn btn-sm m-2 text-light' onClick={handleSubmit}>Stop</button>}
                                 {loading && <div className="loader d-inline justify-content-center align-items-center" id="loader">
                                     <Loader color={color} />
                                 </div>}
                             </div>
-                            <h3 id='note'>0 Hz</h3>
+                            <h3 id='note'>Too quiet...</h3>
                         </div>
-
                     </div>
                     <form onSubmit={handleSubmit} method="POST" className='p-5 mx-4'>
                         <h5 id="question">{questions[order].question}</h5>

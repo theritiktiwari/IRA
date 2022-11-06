@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { db } from "../../firebase";
 import { doc, addDoc, getDocs, updateDoc, query, where, collection } from "firebase/firestore";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../../Components/Loader';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 const Text = ({ siteName, color, user }) => {
     const router = useRouter();
@@ -14,6 +17,7 @@ const Text = ({ siteName, color, user }) => {
     const [order, setOrder] = useState();
     const [score, setScore] = useState("");
     const [detect, setDetect] = useState();
+    const [totalQuestions, setTotalQuestions] = useState();
     const [personality, setPersonality] = useState();
     const [loading, setLoading] = useState(false);
 
@@ -46,6 +50,7 @@ const Text = ({ siteName, color, user }) => {
                     q[doc.id] = doc.data();
                 });
                 setQuestions(q);
+                setTotalQuestions(q.length);
             }
         }
         getData();
@@ -141,25 +146,39 @@ const Text = ({ siteName, color, user }) => {
             <Head>
                 <title>Mood Detection | {siteName}</title>
             </Head>
-            <section className="d-flex justify-content-center align-items-center" style={{ height: "100vh", width: "100vw" }}>
+            <div className="back-to-home">
+                <Link href={"/"}><a>← Home</a></Link>
+            </div>
+            <div className="progress-bar">
+                <CircularProgressbar
+                    value={(order == 1) ? 0 : (order / totalQuestions) * 100}
+                    text={(order == 1) ? '0%' : `${Number(((order / totalQuestions) * 100).toFixed(1))}%`}
+                    styles={buildStyles({
+                        pathColor: "#FD365C",
+                        textColor: "#FD365C",
+                        trailColor: "#FFFFFF",
+                    })}
+                />
+            </div>
+            <section className="d-flex justify-content-center align-items-center" style={{ height: "100vh", width: "100vw", background: "linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(126, 27, 64, 1) 20%, rgba(253, 54, 92, 1) 73%, rgba(0, 212, 255, 1) 100%)" }}>
                 {questions && questions.length > 0 && order < questions.length ? <>
                     <form onSubmit={handleSubmit} method="POST" className='p-5'>
                         <h5 className="mb-4">{questions[order].question}</h5>
                         {questions[order].option1 && <div className="form-check w-100">
                             <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option1" value={questions[order].option1} />
-                            <label className="form-check-label text-capitalize" htmlFor="option1">{questions[order].option1}</label>
+                            <label className="form-check-label" htmlFor="option1">{questions[order].option1}</label>
                         </div>}
                         {questions[order].option3 && <div className="form-check w-100">
                             <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option2" value={questions[order].option2} />
-                            <label className="form-check-label text-capitalize" htmlFor="option2">{questions[order].option2}</label>
+                            <label className="form-check-label" htmlFor="option2">{questions[order].option2}</label>
                         </div>}
                         {questions[order].option3 && <div className="form-check w-100">
                             <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option3" value={questions[order].option3} />
-                            <label className="form-check-label text-capitalize" htmlFor="option3">{questions[order].option3}</label>
+                            <label className="form-check-label" htmlFor="option3">{questions[order].option3}</label>
                         </div>}
                         {questions[order].option4 && <div className="form-check w-100">
                             <input className="form-check-input" type="radio" name="option" onChange={handleChange} id="option4" value={questions[order].option4} />
-                            <label className="form-check-label text-capitalize" htmlFor="option4">{questions[order].option4}</label>
+                            <label className="form-check-label" htmlFor="option4">{questions[order].option4}</label>
                         </div>}
                         {!(questions[order].option1 || questions[order].option2 || questions[order].option3 || questions[order].option4) && <div className="mb-3">
                             {/* <label htmlFor="answer" className='form-label'>Answer</label> */}
