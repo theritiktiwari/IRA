@@ -1,7 +1,8 @@
 import React from 'react';
-import { FaTruck, FaUsers } from 'react-icons/fa';
+import { FaUsers } from 'react-icons/fa';
 import { MdPlace } from 'react-icons/md';
-import { AiOutlineShop } from 'react-icons/ai';
+import { BiHappyAlt } from 'react-icons/bi';
+import { BsFileEarmarkBarGraph } from 'react-icons/bs';
 
 const Stats = () => {
     return (
@@ -11,28 +12,19 @@ const Stats = () => {
                     <div className="p-4 box w-25">
                         <div className="border border-3 border-primary py-3 rounded-3">
                             <div className="flex justify-center mb-1 icon">
-                                <FaTruck />
+                                <BiHappyAlt />
                             </div>
                             <h2 className="title">99+</h2>
-                            <p className="text-secondary">Orders Completed</p>
-                        </div>
-                    </div>
-                    <div className="p-4 box w-25">
-                        <div className="border border-3 border-primary py-3 rounded-3">
-                            <div className="flex justify-center mb-1 icon">
-                                <FaUsers />
-                            </div>
-                            <h2 className="title">1.3K+</h2>
                             <p className="text-secondary">Happy Customers</p>
                         </div>
                     </div>
                     <div className="p-4 box w-25">
                         <div className="border border-3 border-primary py-3 rounded-3">
                             <div className="flex justify-center mb-1 icon">
-                                <AiOutlineShop />
+                                <BsFileEarmarkBarGraph />
                             </div>
-                            <h2 className="title">2.7K+</h2>
-                            <p className="text-secondary">Products</p>
+                            <h2 className="title">16+</h2>
+                            <p className="text-secondary">Mood Personality Combination</p>
                         </div>
                     </div>
                     <div className="p-4 box w-25">
@@ -41,7 +33,16 @@ const Stats = () => {
                                 <MdPlace />
                             </div>
                             <h2 className="title">50+</h2>
-                            <p className="text-secondary">Places</p>
+                            <p className="text-secondary">Places Across World</p>
+                        </div>
+                    </div>
+                    <div className="p-4 box w-25">
+                        <div className="border border-3 border-primary py-3 rounded-3">
+                            <div className="flex justify-center mb-1 icon">
+                                <FaUsers />
+                            </div>
+                            <h2 className="title">1.3K+</h2>
+                            <p className="text-secondary">Registered Users</p>
                         </div>
                     </div>
                 </div>
