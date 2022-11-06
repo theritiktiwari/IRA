@@ -41,7 +41,7 @@ const Header = ({ siteName, logo, user, logout }) => {
                                     <Link href="/"><a className="nav-link active" aria-current="page">Home</a></Link>
                                 </li>
                                 <li className="nav-item fw-bold">
-                                    <Link href="/detect"><a className="nav-link" aria-current="page">Detect the Mood</a></Link>
+                                    <Link href="/detect"><a className="nav-link" aria-current="page">Detect Mood</a></Link>
                                 </li>
                                 <li className="nav-item fw-bold">
                                     <Link href="/report"><a className="nav-link" aria-current="page">Report</a></Link>
