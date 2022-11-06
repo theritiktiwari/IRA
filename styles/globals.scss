@@ -133,6 +133,16 @@ form .form-check input:checked {
     color: $secondary-color;
 }
 
+.progress-bar {
+    display: block;
+    position: fixed;
+    font-weight: bold;
+    width: 100px;
+    height: 100px;
+    top: 20px;
+    right: 20px;
+}
+
 // Header section
 .navbar-scrolled {
     background-color: rgba(255, 255, 255, 0.5) !important;
@@ -233,6 +243,10 @@ footer .name {
     border: 2px solid $secondary-color;
     border-top: none;
     background-color: #000;
+}
+
+#note {
+    color: $background-primary-color;
 }
 
 // Responsiveness
