@@ -220,7 +220,7 @@ const BuildProfile = ({ siteName, logo, color, user }) => {
                         <textarea className="form-control" placeholder="Enter your answer here" name="answer" value={answer} onChange={handleChange} id="answer" style={{ height: "100px" }}></textarea>
                     </div>}
                     {(order == 1) && (!(questions[order].option1 || questions[order].option2 || questions[order].option3 || questions[order].option4)) && <div className="mb-3">
-                        <input type="number" className="form-control" placeholder="Enter your answer here" name="answer" value={answer} onChange={handleChange} id="answer" />
+                        <input type="number" min="0" max="99" className="form-control" placeholder="Enter your answer here" name="answer" value={answer} onChange={handleChange} id="answer" />
                     </div>}
                     {!loading && <button type="submit" className="btn-main w-100 mt-2">{(order === questions.length - 1) ? "Submit" : "Next"}</button>}
                     {loading && <div className="loader d-flex justify-content-center align-items-center" id="loader">
