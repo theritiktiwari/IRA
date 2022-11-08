@@ -80,25 +80,23 @@ const Audio = ({ siteName, color, user }) => {
             const speech = new Speech();
 
             speech.init({
-                'listeners': {
-                    'onvoiceschanged': (voices) => {
-                        console.log("Event voiceschanged", voices)
-                    }
-                }
+                "voice": "Veena",
             }).then((data) => {
                 // The "data" object contains the list of available voices and the voice synthesis params
                 // console.log("Speech is ready, voices are available", data)
+                data.voice = data.voices[40].name;
+                speech.setVoice("Veena");
+                speech.speak({
+                    text: questions[order].question,
+                }).then(() => {
+                    // console.log("Success !")
+                }).catch(e => {
+                    // console.error("An error occurred :", e)
+                })
             }).catch(e => {
-                // console.error("An error occured while initializing : ", e)
+                console.error("An error occured while initializing : ", e)
             })
-            speech.setVoice("Veena");
-            speech.speak({
-                text: questions[order].question,
-            }).then(() => {
-                // console.log("Success !")
-            }).catch(e => {
-                // console.error("An error occurred :", e)
-            })
+
         }
     }, [order, router]);
 
